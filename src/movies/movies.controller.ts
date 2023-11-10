@@ -8,41 +8,44 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { MoviesService } from './movies.service';
+import { Movie } from './entities/Movie.entity';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Controller('movies')
 export class MoviesController {
+  constructor(private readonly moviesService: MoviesService) {}
+
   @Get()
-  getAll(): string {
-    return 'this will return all';
+  getAll(): Movie[] {
+    return this.moviesService.getAll();
   }
 
-  @Get('search')
-  search(@Query('year') searchYear: string) {
-    return `${searchYear} 이후 검색된것만`;
-  }
+  // @Get('search')
+  // search(@Query('year') searchYear: string) {
+  //   return `${searchYear} 이후 검색된것만`;
+  // }
   // search가 :ee 보다 밑에 있으면 파라미터로 인식된다.
 
-  @Get(':ee')
-  getOne(@Param('ee') id: number) {
-    return `this is ${id} movie`;
+  @Get(':id')
+  getOne(@Param('id') id: number): Movie {
+    return this.moviesService.getOne(id);
   }
 
   @Post()
-  createMovie(@Body() movieData) {
-    return movieData;
+  createMovie(@Body() movieData: CreateMovieDto) {
+    return this.moviesService.create(movieData);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `this will delete ${id} movie`;
+  remove(@Param('id') id: number) {
+    return this.moviesService.delete(id);
   }
 
   @Patch(':id')
-  patch(@Param('id') id: string, @Body() movieData) {
-    return {
-      updateMovieId: id,
-      ...movieData,
-    };
+  patch(@Param('id') id: number, @Body() updateData: UpdateMovieDto) {
+    return this.moviesService.update(id, updateData);
   }
   //put은 전체 patch 부분
 }
