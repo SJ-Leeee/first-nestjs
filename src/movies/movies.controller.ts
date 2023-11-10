@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 
 @Controller('movies')
 export class MoviesController {
@@ -7,25 +16,33 @@ export class MoviesController {
     return 'this will return all';
   }
 
-  @Get('/:ee')
+  @Get('search')
+  search(@Query('year') searchYear: string) {
+    return `${searchYear} 이후 검색된것만`;
+  }
+  // search가 :ee 보다 밑에 있으면 파라미터로 인식된다.
+
+  @Get(':ee')
   getOne(@Param('ee') id: number) {
     return `this is ${id} movie`;
   }
 
   @Post()
-  createMovie() {
-    return `this will create a movie`;
+  createMovie(@Body() movieData) {
+    return movieData;
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return `this will delete ${id} movie`;
   }
 
-  @Patch('/:id')
-  paytch(@Param('id') id: string) {
-    return `${id}를 수정한다`;
+  @Patch(':id')
+  patch(@Param('id') id: string, @Body() movieData) {
+    return {
+      updateMovieId: id,
+      ...movieData,
+    };
   }
-
   //put은 전체 patch 부분
 }
