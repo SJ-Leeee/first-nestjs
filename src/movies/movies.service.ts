@@ -25,10 +25,12 @@ export class MoviesService {
   }
 
   create(movieData: CreateMovieDto) {
-    this.movies.push({
+    const newMovie = {
       id: this.movies.length + 1,
       ...movieData,
-    });
+    };
+    this.movies.push(newMovie);
+    return newMovie;
   }
 
   update(id: number, updateData: UpdateMovieDto) {
